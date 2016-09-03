@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+    <mvc:annotation-driven/>
+
+   <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/html;charset=UTF-8</value>
+                            <value>text/xml;charset=UTF-8</value>
+                            <value>text/plain;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                          <!-- 注：json 406错误是因为重写了 AnnotationMethodHandlerAdapter默认的自动配置就不生效了-->
+                            <value>application/json;charset=utf-8</value>
+                        </list>
+                    </property>
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+   <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+    <context:annotation-config/>
+    <context:component-scan base-package="me.hncn.search.web.controller"/>
+
+
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+    <!-- <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            默认全部拦截 不需要登录  过滤 
+            <mvc:exclude-mapping path="/SSOlogin"  />
+            <mvc:exclude-mapping path="/login" />
+            <mvc:exclude-mapping path="/auth/**" />
+            <mvc:exclude-mapping path="/authMerchant/**" />
+            <mvc:exclude-mapping path="/map/**" />
+            <mvc:exclude-mapping path="/redPack/**" />
+            <mvc:exclude-mapping path="/userAddress/**" />
+            <mvc:exclude-mapping path="/payConfig/**" />
+            <mvc:exclude-mapping path="/pay/**" />
+            <mvc:exclude-mapping path="/remote/**" />
+            <bean class="me.hncn.search.web.interceptor.LoginInterceptor">
+                <property name="allowUrl" value="/login" />
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/remote/**"/>
+            <bean class="me.hncn.search.interceptor.RemoteValidateInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+	-->
+    <!-- 上传拦截，如最大上传值及最小上传值 -->
+    <!--<bean id="multipartResolver"
+          class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        &lt;!&ndash; one of the properties available; the maximum file size in bytes &ndash;&gt;
+        <property name="maxUploadSize" value="5120000"/>
+    </bean>-->
+</beans>
